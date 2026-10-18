@@ -1,0 +1,23 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run the test suite
+        run: python -m unittest discover -s tests -v
+      - name: Negative control - the suite must be able to fail
+        run: python sabotage.py
+      - name: The package must install
+        run: |
+          pip install .
+          python -c "import luciddreamer; print('import ok', luciddreamer.__version__)"
